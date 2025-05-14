@@ -1,9 +1,64 @@
+import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import "dart:math";
 
-class HomePage extends StatelessWidget {
-  final String title = "Card Dealing App";
+class HomePage extends StatefulWidget {
   @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final String title = "Card Dealing App";
+  final String cBackImage = "imgaes/Cards/CBack.png";
+  int cardsDealt = 0;
+  List<int> cardsDealtIDArr = [];
+  List<Expanded> cardChildrenArr = [];
   Widget build(BuildContext context) {
+    void createCardChildren() {
+      setState(() {
+        cardChildrenArr = [
+          ...cardChildrenArr,
+          Expanded(
+              child: Container(
+            padding: EdgeInsets.all(3.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: SafeArea(
+                        child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  child: Image.asset('imgaes/Cards/CardPics/C' +
+                      cardsDealtIDArr.last.toString() +
+                      ".png"),
+                )))
+              ],
+            ),
+          ))
+        ];
+      });
+    }
+
+    void dealCard() {
+      setState(() {
+        if (cardsDealt < 52) {
+          cardsDealt++;
+          int cardID = Random().nextInt(52) + 1;
+          cardsDealtIDArr = [...cardsDealtIDArr, cardID];
+        } else {
+          print("ALl cards drawn already");
+        }
+        createCardChildren();
+        print(cardsDealt);
+      });
+    }
+  void shuffleCards(){
+      setState(() {
+        cardsDealt = 0;
+        cardsDealtIDArr = [];
+        cardChildrenArr = [];
+      });
+  }
     return Scaffold(
         appBar: AppBar(
           title: Column(
@@ -30,10 +85,21 @@ class HomePage extends StatelessWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                children: cardChildrenArr,
+              ),
+              Expanded(
+                  child: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        child: Image.asset(cBackImage),
+                      ))), //The back of the deck
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
                       onPressed: () {
-                        print("Deal");
+                        dealCard();
                       },
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.deepPurple[900],
@@ -51,6 +117,7 @@ class HomePage extends StatelessWidget {
                       )),
                   TextButton(
                     onPressed: () {
+                      shuffleCards();
                       print("Shuffle");
                     },
                     style: TextButton.styleFrom(
@@ -64,11 +131,13 @@ class HomePage extends StatelessWidget {
                     ),
                     child: Text(
                       "Shuffle",
-                      style: TextStyle(fontFamily: "Battambang", color: Colors.deepPurple[50]),
+                      style: TextStyle(
+                          fontFamily: "Battambang",
+                          color: Colors.deepPurple[50]),
                     ),
                   )
                 ],
-              )
+              ), //Holds the deal and shuffle buttons
             ],
           ),
         ));
