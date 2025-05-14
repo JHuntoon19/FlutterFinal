@@ -19,46 +19,51 @@ class _HomePageState extends State<HomePage> {
         cardChildrenArr = [
           ...cardChildrenArr,
           Expanded(
-              child: Container(
-            padding: EdgeInsets.all(3.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                    child: SafeArea(
-                        child: ClipRRect(
+            child: Container(
+                padding: EdgeInsets.all(2.0),
+                child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   child: Image.asset('imgaes/Cards/CardPics/C' +
                       cardsDealtIDArr.last.toString() +
                       ".png"),
-                )))
-              ],
-            ),
-          ))
+                )),
+          )
         ];
       });
+    }
+
+    int randomID() {
+      int id = Random().nextInt(52) + 1;
+      if (cardsDealtIDArr.contains(id)) {
+        print("Nuh UH");
+        randomID();
+      }
+      return id;
     }
 
     void dealCard() {
       setState(() {
         if (cardsDealt < 52) {
           cardsDealt++;
-          int cardID = Random().nextInt(52) + 1;
+          int cardID = randomID();
           cardsDealtIDArr = [...cardsDealtIDArr, cardID];
+          createCardChildren();
         } else {
           print("ALl cards drawn already");
         }
-        createCardChildren();
+
         print(cardsDealt);
       });
     }
-  void shuffleCards(){
+
+    void shuffleCards() {
       setState(() {
         cardsDealt = 0;
         cardsDealtIDArr = [];
         cardChildrenArr = [];
       });
-  }
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: Column(
@@ -83,61 +88,70 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: cardChildrenArr,
-              ),
               Expanded(
+                flex: 1,
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: cardChildrenArr,
+                    ),
+                  )),
+              Expanded(
+                flex: 2,
                   child: Container(
                       padding: EdgeInsets.all(10.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         child: Image.asset(cBackImage),
-                      ))), //The back of the deck
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
+                      ))),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          dealCard();
+                        },
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.deepPurple[900],
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(
+                                    color: Colors.deepPurple.shade100,
+                                    width: 2))),
+                        child: Text(
+                          "Deal",
+                          style: TextStyle(
+                            fontFamily: "Battambang",
+                            color: Colors.deepPurple[50],
+                          ),
+                        )),
+                    TextButton(
                       onPressed: () {
-                        dealCard();
+                        shuffleCards();
+                        print("Shuffle");
                       },
                       style: TextButton.styleFrom(
-                          backgroundColor: Colors.deepPurple[900],
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(
-                                  color: Colors.deepPurple.shade100,
-                                  width: 2))),
+                        backgroundColor: Colors.deepPurple[900],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                              color: Colors.deepPurple.shade100,
+                              width: 2,
+                            )),
+                      ),
                       child: Text(
-                        "Deal",
+                        "Shuffle",
                         style: TextStyle(
-                          fontFamily: "Battambang",
-                          color: Colors.deepPurple[50],
-                        ),
-                      )),
-                  TextButton(
-                    onPressed: () {
-                      shuffleCards();
-                      print("Shuffle");
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.deepPurple[900],
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                            color: Colors.deepPurple.shade100,
-                            width: 2,
-                          )),
-                    ),
-                    child: Text(
-                      "Shuffle",
-                      style: TextStyle(
-                          fontFamily: "Battambang",
-                          color: Colors.deepPurple[50]),
-                    ),
-                  )
-                ],
-              ), //Holds the deal and shuffle buttons
+                            fontFamily: "Battambang",
+                            color: Colors.deepPurple[50]),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         ));
