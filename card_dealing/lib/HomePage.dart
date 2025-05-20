@@ -34,10 +34,13 @@ class _HomePageState extends State<HomePage> {
 
     int randomID() {
       int id = Random().nextInt(52) + 1;
+      print(id);
+      print(cardsDealtIDArr.contains(id));
       if (cardsDealtIDArr.contains(id)) {
         print("Nuh UH");
-        randomID();
+        return randomID();
       }
+      print("not in deck " + id.toString());
       return id;
     }
 
@@ -51,8 +54,6 @@ class _HomePageState extends State<HomePage> {
         } else {
           print("ALl cards drawn already");
         }
-
-        print(cardsDealt);
       });
     }
 
